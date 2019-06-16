@@ -35,7 +35,7 @@ class RadioTelescope:
         xn=x/(self.Nside*self.D)
         n0=(self.Nside/self.D)**2
         res=n0*(a+b*xn)/(1+B*xn**C)*np.exp(-(xn)**D)
-        if (type(res)==np.array):
+        if (type(res)==np.ndarray):
             res[res<1e-10]=1e-10
         return res
         
