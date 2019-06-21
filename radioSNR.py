@@ -13,8 +13,8 @@ pumapt=PUMAPetite(C)
 hub=C['h']
 k=np.array([0.2*hub,0.4*hub,0.8*hub])
 mu=0.5
-kpar=np.outer(k*np.cos(mu),np.ones(3))
-kperp=np.outer(np.ones(3),k*np.sin(mu))
+kpar=np.outer(k*mu,np.ones(3))
+kperp=np.outer(np.ones(3),k*np.sqrt(1-mu**2))
 
 zs=np.linspace(0.3,6,100)
 res,respt=[],[]

@@ -101,6 +101,23 @@ class RadioTelescope:
         return noiseout
 
 
+    def PSSensitivityTransit (self, freq=600, bandwidth=900):
+        kB=1.38064852e-23
+        lam = 3e8/(freq*1e6)
+        Acoll= self.Ae*self.Nd
+        FOV=(lam/self.Deff)**2
+        teff=np.sqrt(FOV)/(2*np.pi*np.cos(30/180*np.pi))*24*3600 ## 30 deg south
+        teffchime=(lam/20)/(2*np.pi*np.cos(50/180*np.pi))*24*3600 ## 50 deg north
+        print ("Acoll*np.sqrt(teff*bandwidth*1e6)",Acoll * np.sqrt(2*teff*bandwidth*1e6))
+        
+        Tsys = self.Tsky(freq)+self.Tscope
+        onesigma= 2 * kB * Tsys /  ( Acoll * np.sqrt(2*teff*bandwidth*1e6)) / 1e-26 ## to Jy
+        print ("Tsys",Tsys)
+        print ("teff=",teff,teffchime)
+        print ("CHIME:", 10* 2 *kB * Tsys / (0.7*80*100*np.sqrt(2*teffchime * 400e6))/1e-26)
+        return onesigma
+    
+
 
 class PUMA(RadioTelescope):
     def __init__ (self,C):
