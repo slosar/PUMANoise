@@ -19,6 +19,7 @@ class RadioTelescope:
         self.Deff=self.D*np.sqrt(effic)
         self.ttotal=tint*365*24*3600
         self.Sarea=4*np.pi*fsky
+        self.fsky=fsky
         self.Ae=np.pi/4*D**2*effic
         self.Tscope=Tampl/omtcoupling/skycoupling+Tground*(1-skycoupling)/skycoupling
         self.hexpack=hexpack
@@ -37,6 +38,8 @@ class RadioTelescope:
         res=n0*(a+b*xn)/(1+B*xn**C)*np.exp(-(xn)**D)
         if (type(res)==np.ndarray):
             res[res<1e-10]=1e-10
+        if (res<1e-10):
+            res=1e-10
         return res
         
         
@@ -86,8 +89,10 @@ class RadioTelescope:
 
     def Tb(self,z):
         Ez=ccl.h_over_h0(self.C,1./(1.+z))
-        Ohi=4e-4*(1+z)**0.6/Ez**2
-        Tb=188e-3*self.C['h']*Ez*Ohi*(1+z)**2
+        # Note potentially misleading notation:
+        # Ohi = (comoving density at z) / (critical density at z=0)
+        Ohi=4e-4*(1+z)**0.6
+        Tb=188e-3*self.C['h']/Ez*Ohi*(1+z)**2
         return Tb
     
 
