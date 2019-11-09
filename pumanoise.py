@@ -94,17 +94,17 @@ class RadioTelescope:
             a,b,B,C,D=0.56981864, -0.52741196,  0.8358006 ,  1.66354748,  7.31776875
 
         # Scale physical distances by Nside*D
-        xn=x/(self.Nside*self.D)
+        xn=np.asarray(x)/(self.Nside*self.D)
         # Fitting function prefactor
         n0=(self.Nside/self.D)**2 # m^-2
         # Fitting formula evaluation
-        res=np.array(n0*(a+b*xn)/(1+B*xn**C)*np.exp(-(xn)**D)) # m^-2
+        res=np.asarray( n0*(a+b*xn)/(1+B*xn**C)*np.exp(-(xn)**D) ) # m^-2
         # Impose numerical floor on result
-        if (type(res)==np.ndarray):
+        if (res.shape == ()):
+            res = np.max([res,1e-10])
+        else:
             res[res<1e-10]=1e-10
-        # # If result is single number (not array), impose floor
-        # if (res<1e-10):
-        #     res=1e-10
+
         return res
 
 
@@ -113,8 +113,8 @@ class RadioTelescope:
 
         Parameters
         ----------
-        z : float or array
-            Redshift(s).
+        z : float
+            Redshift.
         kperp : float or array
             kperp value(s), in Mpc^-1.
 
@@ -129,7 +129,7 @@ class RadioTelescope:
         # Comoving radial distance to redshift z
         r=ccl.comoving_radial_distance(self.C,1/(1.+z)) # Mpc
         # Conversion between kperp and uv-plane (vector norm) u
-        u=kperp*r/(2*np.pi)
+        u=np.asarray(kperp)*r/(2*np.pi)
         # Baseline length corresponding to u
         l=u*lam # m
         # Number density of baselines in uv plane
@@ -165,9 +165,10 @@ class RadioTelescope:
 
         Parameters
         ----------
-        z : float or array
-            Redshift(s).
-        Tb : Mean 21cm brightness temperature (your choice of units).
+        z : float
+            Redshift.
+        Tb : float
+            Mean 21cm brightness temperature (your choice of units).
 
         Returns
         -------
@@ -187,7 +188,7 @@ class RadioTelescope:
             2d array where columns are kperp values (in Mpc^-1) and rows are identical.
             Generate e.g. with np.outer(np.ones(nkpar),kperp_vec) where kperp_vec
             is a list of kperp values.
-        kpar : float
+        kpar : array[nkpar,nkperp]
             2d array where rows are kpar values (in Mpc^-1) and columns are identical.
         Tb : float, optional
             Mean 21cm brightness temperature, in K (default: computed automatically).
@@ -236,7 +237,7 @@ class RadioTelescope:
             Sky temperature(s), in K.
         """
         #return (f/100.)**(-2.4)*2000+2.7 ## from CVFisher
-        return 25.*(f/400.)**(-2.75) +2.75
+        return 25.*(np.asarray(f)/400.)**(-2.75) +2.75
 
     def TbTZ(self,z):
         """Approximation for mean 21cm brightness temperature.
@@ -255,6 +256,7 @@ class RadioTelescope:
             Temperature values, in K.
         """
         OmegaM=0.31
+        z = np.asarray(z)
         return 0.3e-3*np.sqrt((1+z)/(2.5)*0.29/(OmegaM+(1.-OmegaM)/(1+z)**3))
 
 
@@ -272,8 +274,9 @@ class RadioTelescope:
         Returns
         -------
         Tb : float or array
-            Temperature values, in K.
+            Temperature value(s), in K.
         """
+        z = np.asarray(z)
         Ez=ccl.h_over_h0(self.C,1./(1.+z))
         # Note potentially misleading notation:
         # Ohi = (comoving density at z) / (critical density at z=0)
@@ -292,7 +295,7 @@ class RadioTelescope:
             2d noise power spectrum.
         kperp : array[nkpar,nkperp]
             2d array where columns are kperp values (in Mpc^-1) and rows are identical.
-        kpar : float
+        kpar : array[nkpar,nkperp]
             2d array where rows are kpar values (in Mpc^-1) and columns are identical.
         z : float
             Redshift.
