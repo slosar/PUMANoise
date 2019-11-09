@@ -1,13 +1,19 @@
+"""PUMA Noise simulator
+
+Follows https://arxiv.org/abs/1810.09572.
+
+Includes a general RadioTelescope class that defines a telescope in terms
+of various dish, packing, and instrumental noise properties, as well as
+instances of this class for the full and petite configurations of PUMA
+(see https://arxiv.org/abs/1907.12559).
+
+All spatial units are Mpc, not Mpc/h !!
+"""
+
 import numpy as np
 from castorina import castorinaBias,castorinaPn
 import pyccl as ccl
 
-##
-## PUMA Noise simulator
-## Follows https://arxiv.org/abs/1810.09572
-##
-## All units are Mpc, not Mpc/h !!
-##
 
 class RadioTelescope:
     """Class for computing signal and noise properties of a radio telescope.
