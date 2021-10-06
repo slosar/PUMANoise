@@ -213,6 +213,27 @@ class RadioTelescope:
         Pn=self.PNoise(z,kperp)+self.PNoiseShot(z,Tb)
         Pn[kpar<kparcut]=1e30
         return Pn
+    
+    
+    def PHINoiseKFull(self,z,kperp,kpar, Tb=None,kparcut=0.01*0.7):
+        """Full HI noise power spectrum.
+        
+        This has units of Mpc^3, and is therefore the noise power spectrum
+        of P_HI(k), incorporating both HI shot noise and telescope thermal
+        noise.
+        
+        Input parameters are same as PNoiseKFull.
+        
+        Returns
+        -------
+        Pn : array[nkpar,nkperp]
+            Array of effective HI noise power spectrum, in Mpc^3.
+        """
+        if Tb is None:
+            Tb = self.Tb(z)
+            
+        return self.PNoiseKFull(z,kperp,kpar,Tb=Tb,kparcut=kparcut) / Tb**2
+        
 
     def bias(self,z):
         """HI bias with redshift.
