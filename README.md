@@ -1,5 +1,4 @@
 # PUMANoise
 Noise calculator for PUMA telescope
 
-See `radioSNR.py` for example.
-
+See `scripts/radioSNR.py` for example.

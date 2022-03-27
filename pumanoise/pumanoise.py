@@ -11,7 +11,7 @@ All spatial units are Mpc, not Mpc/h !!
 """
 
 import numpy as np
-from castorina import castorinaBias,castorinaPn
+from .castorina import castorinaBias,castorinaPn
 import pyccl as ccl
 
 
@@ -213,17 +213,17 @@ class RadioTelescope:
         Pn=self.PNoise(z,kperp)+self.PNoiseShot(z,Tb)
         Pn[kpar<kparcut]=1e30
         return Pn
-    
-    
+
+
     def PHINoiseKFull(self,z,kperp,kpar, Tb=None,kparcut=0.01*0.7):
         """Full HI noise power spectrum.
-        
+
         This has units of Mpc^3, and is therefore the noise power spectrum
         of P_HI(k), incorporating both HI shot noise and telescope thermal
         noise.
-        
+
         Input parameters are same as PNoiseKFull.
-        
+
         Returns
         -------
         Pn : array[nkpar,nkperp]
@@ -231,9 +231,9 @@ class RadioTelescope:
         """
         if Tb is None:
             Tb = self.Tb(z)
-            
+
         return self.PNoiseKFull(z,kperp,kpar,Tb=Tb,kparcut=kparcut) / Tb**2
-        
+
 
     def bias(self,z):
         """HI bias with redshift.
@@ -417,14 +417,14 @@ class PUMAPetite(RadioTelescope):
 class CHORD(RadioTelescope):
     """Specs for CHORD core array (see https://arxiv.org/pdf/1911.01777.pdf).
 
-    For simplicity, we use 23^2 = 529 instead of 512 dishes, taken to be 
+    For simplicity, we use 23^2 = 529 instead of 512 dishes, taken to be
     a square array. Table 1 in the CHORD white paper lists a 30K system
     temperature, and elsewhere a nominal 5-year duration is quoted.
     """
     def __init__ (self,C):
         RadioTelescope.__init__(self, C, Nside=23, D=6, tint=5, fsky=0.5, effic=0.7,
                                 Tampl=30., Tground=300., omtcoupling=0.9, skycoupling=0.9, hexpack=False)
-        
+
 class HIRAX(RadioTelescope):
     """Specs for HIRAX (see https://arxiv.org/pdf/2109.13755.pdf).
     """
