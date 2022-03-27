@@ -413,3 +413,21 @@ class PUMAPetite(RadioTelescope):
     def __init__ (self,C):
         RadioTelescope.__init__(self,C,Nside=100, D=6, tint=5/4, fsky=0.5, effic=0.7,
                                 Tampl=50., Tground=300., omtcoupling=0.9, skycoupling=0.9, hexpack=True)
+
+class CHORD(RadioTelescope):
+    """Specs for CHORD core array (see https://arxiv.org/pdf/1911.01777.pdf).
+
+    For simplicity, we use 23^2 = 529 instead of 512 dishes, taken to be 
+    a square array. Table 1 in the CHORD white paper lists a 30K system
+    temperature, and elsewhere a nominal 5-year duration is quoted.
+    """
+    def __init__ (self,C):
+        RadioTelescope.__init__(self, C, Nside=23, D=6, tint=5, fsky=0.5, effic=0.7,
+                                Tampl=30., Tground=300., omtcoupling=0.9, skycoupling=0.9, hexpack=False)
+        
+class HIRAX(RadioTelescope):
+    """Specs for HIRAX (see https://arxiv.org/pdf/2109.13755.pdf).
+    """
+    def __init__ (self,C):
+        RadioTelescope.__init__(self, C, Nside=32, D=6, tint=4, fsky=0.5, effic=0.7,
+                                Tampl=50., Tground=300., omtcoupling=0.9, skycoupling=0.9, hexpack=False)
